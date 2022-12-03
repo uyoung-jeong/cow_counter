@@ -5,6 +5,7 @@ class Evaluator():
         self.metrics = cfg.TEST.METRICS
 
     def evaluate(self, pred, gt):
+        num_sample = len(gt)
         score_dict = dict()
 
         # rmse
@@ -15,11 +16,16 @@ class Evaluator():
         pred_int = np.around(pred).astype(int) # discretize
 
         cat_data = np.stack((pred_int,gt))
-        tp = np.min(cat_data, axis=0)
+        tp = np.clip(np.min(cat_data, axis=0), a_min=0, a_max=None)
         fp = np.clip(pred_int - gt, a_min=0, a_max=None)
         fn = np.clip(gt - pred_int, a_min=0, a_max=None)
 
-        ap = np.mean(tp/(tp+fp))
+        #ap = np.mean(tp/(tp+fp)) # sometimes tp+fp=0
+        tp_fp = tp+fp
+        tp_fp_valid = tp_fp>0
+        ap_sum = np.sum(tp[tp_fp_valid]/tp_fp[tp_fp_valid])
+        ap = ap_sum/num_sample
+
         ar = np.mean(tp/(tp+fn))
         score_dict['ap'] = ap
         score_dict['ar'] = ar
