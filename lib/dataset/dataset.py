@@ -32,7 +32,13 @@ class Dataset():
             cat_dict[k]=[]
         for di, dic in enumerate(dicts):
             for k in keys:
-                cat_dict[k] += dic[k]
+                if isinstance(dic[k],np.ndarray):
+                    if len(cat_dict[k])==0:
+                        cat_dict[k] = dic[k]
+                    else:
+                        cat_dict[k] = np.concatenate((cat_dict[k], dic[k]),axis=0)
+                else:
+                    cat_dict[k] += dic[k]
         return cat_dict
 
     # ki: fold idx

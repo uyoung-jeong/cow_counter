@@ -163,6 +163,7 @@ def prepro_data(base_dir, name='cow', svd=False, kmeans=False):
         from sklearn.decomposition import TruncatedSVD
         svd_solver = TruncatedSVD(n_components=svd, n_iter=10, random_state=42)
         svd_output = svd_solver.fit_transform(imgs_norm)
+        svd_output = svd_output / svd_output.max()
 
         feats = np.concatenate((feats, svd_output), axis=1)
 
