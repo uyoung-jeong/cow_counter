@@ -2,7 +2,9 @@ from dataset import Dataset
 
 from .svr import SVR
 from .mlp import MLP
+from .mlp_svr import MLP_SVR
 from .evaluator import Evaluator
+
 
 class Trainer():
     def __init__(self, cfg):
@@ -18,6 +20,9 @@ class Trainer():
 
     def k_fold_evaluation(self):
         mean_fold_scores = dict()
+        if self.model_class == 'MLP_SVR':
+            mlp_mean_fold_scores = dict()
+        
         for ki in range(self.num_fold):
             train_data, test_data = self.dataset.split_5fold(ki)
             print(f"{len(train_data['img_ids'])} samples for train, {len(test_data['img_ids'])} samples for test")
@@ -27,7 +32,9 @@ class Trainer():
 
             # initialize new model
             self.model = eval(self.model_class)(self.cfg)
-
+            if self.model_class == 'MLP_SVR':
+                self.model.idx = ki
+                
             # train model
             self.model = self.model.fit(train_x,train_y)
 
@@ -45,8 +52,26 @@ class Trainer():
                 if k not in mean_fold_scores.keys():
                     mean_fold_scores[k] = []
                 mean_fold_scores[k] += [v]
-
+        
+            if self.model_class == 'MLP_SVR':
+                mlp_preds = self.model.mlp.predict(test_x)
+                mlp_preds = self.dataset.denormalize(x=None, y=mlp_preds)
+                mlp_score_dict = self.evaluator.evaluate(mlp_preds, test_y)
+                print(f"{ki}th for MLP. rmse:{mlp_score_dict['rmse']:.4f}, ap:{mlp_score_dict['ap']:.4f}, ar:{mlp_score_dict['ar']:.4f}")
+                for k,v in mlp_score_dict.items():
+                    if k not in mlp_mean_fold_scores.keys():
+                        mlp_mean_fold_scores[k] = []
+                    mlp_mean_fold_scores[k] += [v]
+                    
         for k,v in mean_fold_scores.items():
             mean_fold_scores[k] = sum(v)/len(v)
         print("5-fold average metrics")
         print(f"rmse:{mean_fold_scores['rmse']:.4f}, ap:{mean_fold_scores['ap']:.4f}, ar:{mean_fold_scores['ar']:.4f}")
+
+        if self.model_class == 'MLP_SVR':
+            for k,v in mlp_mean_fold_scores.items():
+                mlp_mean_fold_scores[k] = sum(v)/len(v)
+            print("FOR MLP")
+            print(f"rmse:{mlp_mean_fold_scores['rmse']:.4f}, ap:{mlp_mean_fold_scores['ap']:.4f}, ar:{mlp_mean_fold_scores['ar']:.4f}")
+
+        print('='*100)
