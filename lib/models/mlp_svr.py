@@ -27,7 +27,6 @@ class MLP_SVR():
         scaler = StandardScaler()
         scaler.fit(test_logit)
         scaled_logit = scaler.transform(test_logit)
-        # print(tt1_2[:3])
         # print(test_logit[:3])
         return self.svr.predict(scaled_logit)
 
