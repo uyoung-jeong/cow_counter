@@ -46,7 +46,8 @@ class MLP():
         return self.model.predict(x)
     
     def save_weight(self):
-        if os.path.isdir(f'lib/weights') and self.cfg.MODEL.MLP.SAVE_NAME:
+        os.makedirs('lib/weights', exist_ok=True)
+        if self.cfg.MODEL.MLP.SAVE_NAME:
             split_name = self.cfg.MODEL.MLP.SAVE_NAME.split('.')[0]
             check_name = split_name + '_5.npy'
 
