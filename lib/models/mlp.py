@@ -36,7 +36,7 @@ class MLP():
         self.model = MLPRegressor(**alter_dict)
         
     
-    def fit(self,x,y):
+    def fit(self,x,y, save=True):
         result = self.model.fit(x,y)
         if save:
             self.save_weight()
