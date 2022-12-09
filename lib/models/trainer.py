@@ -2,7 +2,9 @@ from dataset import Dataset
 
 from .svr import SVR
 from .mlp import MLP
+from .mlp_svr import MLP_SVR
 from .evaluator import Evaluator
+
 
 class Trainer():
     def __init__(self, cfg):
@@ -18,6 +20,7 @@ class Trainer():
 
     def k_fold_evaluation(self):
         mean_fold_scores = dict()
+
         for ki in range(self.num_fold):
             train_data, test_data = self.dataset.split_5fold(ki)
             print(f"{len(train_data['img_ids'])} samples for train, {len(test_data['img_ids'])} samples for test")
@@ -50,3 +53,5 @@ class Trainer():
             mean_fold_scores[k] = sum(v)/len(v)
         print("5-fold average metrics")
         print(f"rmse:{mean_fold_scores['rmse']:.4f}, ap:{mean_fold_scores['ap']:.4f}, ar:{mean_fold_scores['ar']:.4f}")
+
+        print('='*100)

@@ -1,0 +1,6 @@
+MODEL:
+  CLASS: 'MLP_SVR'
+  MLP:
+    VERBOSE: False
+    SAVE_NAME: 'Condition_1.npy'
+    TOL: 1e-3

@@ -1,0 +1,5 @@
+MODEL:
+  CLASS: 'MLP'
+  MLP:
+    SAVE_NAME: 'Condition_1.npy'
+    VERBOSE: False
