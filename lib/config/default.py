@@ -19,9 +19,9 @@ _C.CUDNN.ENABLED = True
 
 # common params for NETWORK
 _C.MODEL = CN()
-_C.MODEL.CLASS = 'SVR' # ['SVR', 'MLP', 'MLP_SVR']
+_C.MODEL.CLASS = 'MLP_SVR' # ['SVR', 'MLP', 'MLP_SVR']
 _C.MODEL.SVR = CN()
-_C.MODEL.SVR.KERNEL = 'rbf' # ['rbf', 'linear', 'poly', 'sigmoid']
+_C.MODEL.SVR.KERNEL = 'poly' # ['rbf', 'linear', 'poly', 'sigmoid']
 _C.MODEL.SVR.GAMMA = 'scale'
 _C.MODEL.SVR.COEF0 = .0
 _C.MODEL.SVR.TOL = 1.0E-6
