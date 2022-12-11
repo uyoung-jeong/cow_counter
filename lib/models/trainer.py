@@ -1,5 +1,7 @@
 from dataset import Dataset
-
+import numpy as np
+import plotly.express as px
+import plotly.graph_objects as go
 from .svr import SVR
 from .mlp import MLP
 from .mlp_svr import MLP_SVR
@@ -42,16 +44,55 @@ class Trainer():
 
             score_dict = self.evaluator.evaluate(preds, test_y)
 
+            #np.clip(preds, a_min=0, a_max=14)
+
             print(f"{ki}th fold. rmse:{score_dict['rmse']:.4f}, ap:{score_dict['ap']:.4f}, ar:{score_dict['ar']:.4f}")
 
+           
             for k,v in score_dict.items():
                 if k not in mean_fold_scores.keys():
                     mean_fold_scores[k] = []
                 mean_fold_scores[k] += [v]
-
+          
+       
         for k,v in mean_fold_scores.items():
             mean_fold_scores[k] = sum(v)/len(v)
         print("5-fold average metrics")
         print(f"rmse:{mean_fold_scores['rmse']:.4f}, ap:{mean_fold_scores['ap']:.4f}, ar:{mean_fold_scores['ar']:.4f}")
 
         print('='*100)
+        
+        fig = px.scatter(x=test_y, y=preds, labels={'x': 'ground truth', 'y': 'predictions'})
+        np.clip(preds, a_min=0, a_max=14)
+        fig.add_shape(
+                type="line", line=dict(dash='dash'),
+                x0=test_y.min(), y0=test_y.min(),
+                x1=test_y.max(), y1=test_y.max(),
+            )
+        fig.update_yaxes(
+            scaleanchor = "x",
+            scaleratio = 1,
+        )
+        fig.update_xaxes(
+            range=[0,15],  # sets the range of xaxis
+            constrain="domain",  # meanwhile compresses the xaxis by decreasing its "domain"
+            )
+        fig.update_layout(autosize=False,
+        width=800, height=800,
+        title={
+        'text': "MLP+SVR (HL=100,poly) Performance",
+        'y':0.95,
+        'x':0.5,
+        'xanchor': 'center',
+        'yanchor': 'top'},
+        font=dict(
+        size=15)
+        )
+
+        fig.show()
+
+        
+
+
+
+    
