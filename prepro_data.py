@@ -16,7 +16,7 @@ id_dict = {'horse':19,
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--base_dir', type=str, default='/data')
+    parser.add_argument('--base_dir', type=str, default='/syn_mnt/uyoung/human/coco')
     parser.add_argument('--name', type=str, default='cow')
     parser.add_argument('--svd', type=int, default=0) # 0: disabled
     parser.add_argument('--kmeans', type=int, default=0) # 0: disabled

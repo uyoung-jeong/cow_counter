@@ -1,6 +1,4 @@
 import numpy as np
-import plotly.express as px
-import plotly.graph_objects as go
 
 class Evaluator():
     def __init__(self,cfg):
@@ -33,5 +31,3 @@ class Evaluator():
         score_dict['ar'] = ar
 
         return score_dict
-    
-   
